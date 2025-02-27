@@ -134,5 +134,5 @@ MIT
 ## Acknowledgements
 
 - Thanks to Patrick Collins for guidance through his Solidity course
-- Thanks to IIIu_23 for translate the course very well
+- Thanks to IIIu_23 for translating the Solidity course, making it more accessible
 - Thanks to Chainlink for providing price oracle services
