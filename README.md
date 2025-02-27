@@ -1,66 +1,137 @@
-## Foundry
+# FundMe Smart Contract Project
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+This is a crowdfunding smart contract project developed with Foundry as a follow-along assignment for a Solidity course. The project implements a simple crowdfunding functionality that allows users to send ETH to the contract, with only the contract owner being able to withdraw these funds.
 
-Foundry consists of:
+## Project Overview
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+The FundMe contract is a simple crowdfunding platform with the following features:
 
-## Documentation
+- Users can fund the project by sending ETH (minimum amount is ETH equivalent to 5 USD)
+- The contract uses Chainlink Oracle to get real-time ETH/USD price
+- Only the contract owner can withdraw all funds
+- Implements two withdrawal methods, with `cheaperWithdraw` optimizing memory usage to reduce gas costs
 
-https://book.getfoundry.sh/
+## Tech Stack
 
-## Usage
+- **Solidity**: Smart contract programming language
+- **Foundry**: Ethereum development toolkit
+  - **Forge**: Testing framework
+  - **Anvil**: Local Ethereum node
+  - **Cast**: Tool for interacting with EVM smart contracts
+- **Chainlink**: Oracle used for obtaining ETH/USD price data
 
-### Build
+## Project Structure
 
-```shell
-$ forge build
+```
+foundry-fund-me-f23/
+├── src/                    # Source code
+│   ├── FundMe.sol          # Main contract
+│   └── PriceConverter.sol  # Price conversion library
+├── script/                 # Deployment and interaction scripts
+│   ├── DeployFundMe.s.sol  # Deployment script
+│   ├── HelperConfig.s.sol  # Network configuration helper
+│   └── Interactions.s.sol  # Contract interaction scripts
+├── test/                   # Test files
+│   ├── integration/        # Integration tests
+│   ├── mocks/              # Mock contracts
+│   └── uint/               # Unit tests
+└── foundry.toml            # Foundry configuration file
 ```
 
-### Test
+## Core Contracts
 
-```shell
-$ forge test
+### FundMe.sol
+
+This is the main contract of the project, implementing crowdfunding functionality:
+
+- `fund()`: Allows users to send ETH to the contract
+- `withdraw()`: Allows the owner to withdraw all funds
+- `cheaperWithdraw()`: Optimized withdrawal method to reduce gas costs
+
+### PriceConverter.sol
+
+This is a library contract used for:
+
+- Getting ETH/USD price from Chainlink Oracle
+- Converting ETH amounts to their USD equivalent
+
+## Installation and Setup
+
+1. Clone the repository
+
+```bash
+git clone <repository-url>
+cd foundry-fund-me-f23
 ```
 
-### Format
+2. Install dependencies
 
-```shell
-$ forge fmt
+```bash
+forge install
 ```
 
-### Gas Snapshots
+3. Compile contracts
 
-```shell
-$ forge snapshot
+```bash
+forge build
 ```
 
-### Anvil
+## Testing
 
-```shell
-$ anvil
+The project includes unit tests and integration tests:
+
+```bash
+# Run all tests
+forge test
+
+# Run specific test
+forge test --match-test testFundFailsWithoutEnoughETH
+
+# View test coverage
+forge coverage
 ```
 
-### Deploy
+## Deployment
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+### Local Deployment
+
+1. Start a local node
+
+```bash
+anvil
 ```
 
-### Cast
+2. Deploy the contract
 
-```shell
-$ cast <subcommand>
+```bash
+forge script script/DeployFundMe.s.sol --rpc-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast
 ```
 
-### Help
+### Testnet Deployment
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
+Deploy to Sepolia testnet:
+
+```bash
+forge script script/DeployFundMe.s.sol --rpc-url $SEPOLIA_RPC_URL --private-key $PRIVATE_KEY --broadcast --verify --etherscan-api-key $ETHERSCAN_API_KEY
 ```
+
+## Interacting with the Contract
+
+After deployment, you can interact with the contract using the following scripts:
+
+```bash
+# Send funds to the contract
+forge script script/Interactions.s.sol:FundFundMe --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast
+
+# Withdraw funds from the contract
+forge script script/Interactions.s.sol:WithdrawFundMe --rpc-url $RPC_URL --private-key $PRIVATE_KEY --broadcast
+```
+
+## License
+
+MIT
+
+## Acknowledgements
+
+- Thanks to Patrick Collins for guidance through his Solidity course
+- Thanks to Chainlink for providing price oracle services
