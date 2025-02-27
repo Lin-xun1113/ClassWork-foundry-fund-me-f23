@@ -3,6 +3,6 @@ src = "src"
 out = "out"
 libs = ["lib"]
 remappings = ["@chainlink/contracts/src/v0.8/shared/=lib/chainlink-brownie-contracts/contracts/src/v0.8/"]
-
+ffi = true
 
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
